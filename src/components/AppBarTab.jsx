@@ -1,25 +1,25 @@
-import { View, StyleSheet, Pressable } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
+import { Link } from 'react-router-native';
 import Text from './Text';
-import Constants from 'expo-constants';
-
-import theme from '../../theme';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: theme.colors.neutralBlueOpacity,
+    //backgroundColor: theme.colors.neutralBlueOpacity,
+    //backgroundColor: 'blue',
     //opacity: 0.5,
-    paddingTop: Constants.statusBarHeight + 20,
+    
     paddingBottom: 20,
     paddingLeft: 10,
+    marginRight: 10,
   },
 });
 
-const AppBarTab = ({ content }) => {
+const AppBarTab = ({ content, path }) => {
   return (
-    <Pressable>
-      <View style={styles.container}>
-        <Text fontWeight='bold'>{ content }</Text>
-      </View>
+    <Pressable style={styles.container}>
+        <Link to={path}>
+          <Text fontWeight='bold' color='white'>{ content }</Text>
+        </Link>
     </Pressable>
   )
 }

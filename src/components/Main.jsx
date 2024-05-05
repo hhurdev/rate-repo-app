@@ -1,6 +1,8 @@
 import { FlatList, View, StyleSheet } from 'react-native';
 import AppBar from './AppBar';
 import RepositoryItem from './RepositoryItem';
+import { Route, Routes } from 'react-router-native';
+import SignIn from './SignIn'
 
 const repositories = [
   {
@@ -55,19 +57,32 @@ const styles = StyleSheet.create({
   },
 });
 
-const ItemSeparator = () => <View style={styles.separator} />;
-
-const RepositoryList = () => {
+const repoList = () => {
   return (
-    <View style={{ backgroundColor: '#e1e4e8'}}>
-      <AppBar></AppBar>
-      <FlatList style={{ color: styles.color }}
+    <FlatList
         data={repositories}
         renderItem={({item}) => <RepositoryItem item={item} />}
         ItemSeparatorComponent={ItemSeparator}
         keyExtractor={item => item.id}
         // other props
       />
+  )
+}
+
+const ItemSeparator = () => <View style={styles.separator} />;
+
+const onSubmit = () => {
+  console.log('Form has been submitted')
+}
+
+const RepositoryList = () => {
+  return (
+    <View style={{ backgroundColor: '#e1e4e8' }}>
+      <AppBar></AppBar>
+      <Routes>
+        <Route path='/' element={repoList()} />
+        <Route path='/login' element={ <SignIn handleSubmit={onSubmit} /> } />
+      </Routes>
     </View>
   );
 };
