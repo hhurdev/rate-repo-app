@@ -1,11 +1,8 @@
 import AppBarTab from './AppBarTab'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import Constants from 'expo-constants'
-import { useNavigate } from 'react-router-native'
 
 import { useLoggedInStatus } from '../hooks/useLoggedInStatus'
-import { useApolloClient } from '@apollo/client'
-import useAuthStorage from '../hooks/useAuthStorage'
 import Text from './Text'
 import SignOutTab from './SignOutTab'
 
@@ -20,9 +17,6 @@ const styles = StyleSheet.create({
 
 const AppBar = () => {
   const { loading, error, isLoggedIn } = useLoggedInStatus()
-  const authStorage = useAuthStorage()
-  const apolloClient = useApolloClient()
-  const navigate = useNavigate()
 
   if (loading) {
     return (
@@ -32,22 +26,22 @@ const AppBar = () => {
     )
   }
 
-  const handleSignOut = async () => {
-    console.log('signing out')
-    await authStorage.removeAccessToken()
-    await apolloClient.resetStore()
-    navigate('/')
-  }
-
   return (
     <View style={styles.appBar}>
       <ScrollView horizontal>
         <AppBarTab content="Repositories" path="/" />
+        {isLoggedIn && (
+          <AppBarTab content="Create a review" path="/create-review" />
+        )}
         {isLoggedIn ? (
-          <SignOutTab />
+          <>
+            <AppBarTab content="My reviews" path="/my-reviews" />
+            <SignOutTab />
+          </>
         ) : (
           <AppBarTab content="Sign In" path="/login" />
         )}
+        {!isLoggedIn && <AppBarTab content="Sign up" path="/signup" />}
       </ScrollView>
     </View>
   )

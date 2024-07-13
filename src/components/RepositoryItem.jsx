@@ -1,6 +1,11 @@
-import { View, StyleSheet, Image } from 'react-native'
+import { View, StyleSheet, Image, Pressable } from 'react-native'
+import { useNavigate } from 'react-router-native'
+import * as Linking from 'expo-linking'
+
 import theme from '../../theme'
 import Text from './Text'
+
+// TODO: Move some of the styles to themes?
 
 const styles = StyleSheet.create({
   separator: {
@@ -48,6 +53,19 @@ const styles = StyleSheet.create({
   dataText: {
     marginBottom: 5,
   },
+  gitHubLinkButton: {
+    backgroundColor: '#0366d6',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+    borderRadius: 5,
+    marginTop: 15,
+  },
+  boldWhiteText: {
+    fontWeight: theme.fontWeights.bold,
+    color: theme.colors.textWhite,
+  },
 })
 
 const parseNumbers = (number) => {
@@ -59,55 +77,79 @@ const parseNumbers = (number) => {
   return `${number}`
 }
 
-const RepositoryItem = ({ item }) => {
+const onPress = (item, navigate) => {
+  console.log(`RepositoryItem ${item.id} pressed`)
+  navigate(`/repository/${item.id}`)
+}
+
+const RepositoryItem = ({ item, showGitHubButton }) => {
+  const navigate = useNavigate()
+
+  const openGitHubPage = (event) => {
+    // ettei paina sitä ylempää pressablea (joka avaa yksittäisen repon)
+    event.stopPropagation()
+    Linking.openURL(item.url).catch((error) =>
+      console.log('error opening the link: ', error)
+    )
+  }
+
   return (
-    <View style={styles.container}>
-      <View style={styles.profileContainer}>
-        <Image
-          style={styles.tinyLogo}
-          source={require('../../assets/avatar-placeholder.jpeg')}
-        />
-        <View style={styles.nameContainer}>
-          <Text
-            style={styles.textMargin}
-            fontWeight="bold"
-            fontSize="subheading"
-          >
-            {item.fullName}
-          </Text>
-          <Text style={styles.textMargin}>{item.description}</Text>
-          <View style={styles.languageTagContainer}>
-            <Text style={styles.languageTag}>{item.language}</Text>
+    <Pressable onPress={() => onPress(item, navigate)}>
+      <View testID="repositoryItem" style={styles.container}>
+        <View style={styles.profileContainer}>
+          <Image
+            style={styles.tinyLogo}
+            source={require('../../assets/avatar-placeholder.jpeg')}
+          />
+          <View style={styles.nameContainer}>
+            <Text
+              style={styles.textMargin}
+              fontWeight="bold"
+              fontSize="subheading"
+            >
+              {item.fullName}
+            </Text>
+            <Text style={styles.textMargin}>{item.description}</Text>
+            <View style={styles.languageTagContainer}>
+              <Text style={styles.languageTag}>{item.language}</Text>
+            </View>
           </View>
         </View>
+        <View style={styles.dataContainer}>
+          <View style={styles.dataBlock}>
+            <Text fontWeight="bold" style={styles.dataText}>
+              {parseNumbers(item.stargazersCount)}
+            </Text>
+            <Text>Stars</Text>
+          </View>
+          <View style={styles.dataBlock}>
+            <Text fontWeight="bold" style={styles.dataText}>
+              {parseNumbers(item.forksCount)}
+            </Text>
+            <Text>Forks</Text>
+          </View>
+          <View style={styles.dataBlock}>
+            <Text fontWeight="bold" style={styles.dataText}>
+              {parseNumbers(item.reviewCount)}
+            </Text>
+            <Text>Reviews</Text>
+          </View>
+          <View style={styles.dataBlock}>
+            <Text fontWeight="bold" style={styles.dataText}>
+              {parseNumbers(item.ratingAverage)}
+            </Text>
+            <Text>Rating</Text>
+          </View>
+        </View>
+        {showGitHubButton && (
+          <Pressable onPress={openGitHubPage}>
+            <View style={styles.gitHubLinkButton}>
+              <Text style={styles.boldWhiteText}>Open in GitHub</Text>
+            </View>
+          </Pressable>
+        )}
       </View>
-      <View style={styles.dataContainer}>
-        <View style={styles.dataBlock}>
-          <Text fontWeight="bold" style={styles.dataText}>
-            {parseNumbers(item.stargazersCount)}
-          </Text>
-          <Text>Stars</Text>
-        </View>
-        <View style={styles.dataBlock}>
-          <Text fontWeight="bold" style={styles.dataText}>
-            {parseNumbers(item.forksCount)}
-          </Text>
-          <Text>Forks</Text>
-        </View>
-        <View style={styles.dataBlock}>
-          <Text fontWeight="bold" style={styles.dataText}>
-            {parseNumbers(item.reviewCount)}
-          </Text>
-          <Text>Reviews</Text>
-        </View>
-        <View style={styles.dataBlock}>
-          <Text fontWeight="bold" style={styles.dataText}>
-            {parseNumbers(item.ratingAverage)}
-          </Text>
-          <Text>Rating</Text>
-        </View>
-      </View>
-    </View>
+    </Pressable>
   )
 }
 

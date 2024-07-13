@@ -9,8 +9,10 @@ const SignOutTab = () => {
   const navigate = useNavigate()
 
   const handleSignOut = async () => {
+    console.log('signing out')
     await authStorage.removeAccessToken()
     await apolloClient.resetStore()
+    console.log('navigating to /')
     navigate('/')
   }
 

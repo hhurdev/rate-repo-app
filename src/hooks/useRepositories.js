@@ -2,13 +2,14 @@ import { useQuery } from '@apollo/client'
 
 import { GET_REPOSITORIES } from '../graphql/queries'
 
-const useRepositories = () => {
-  console.log('fetching repositories')
+const useRepositories = ({ orderBy, orderDirection }, searchKeyword) => {
   const { data, error, loading } = useQuery(GET_REPOSITORIES, {
-    /*
-    Tsekkaa cachen, jos on, palauttaa sen. Pyytää enivei palvelimelta uuden datan.
-    */
     fetchPolicy: 'cache-and-network',
+    variables: {
+      orderBy,
+      orderDirection,
+      searchKeyword,
+    },
   })
 
   return {

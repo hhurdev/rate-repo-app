@@ -6,8 +6,11 @@ import Main from './src/components/Main'
 import createApolloClient from './src/utils/apolloClient'
 import AuthStorage from './src/utils/authStorage'
 import AuthStorageContext from './src/contexts/AuthStorageContext'
+import SortingStorage from './src/utils/sortingStorage'
+import SortingContext from './src/contexts/SortingContext'
 
 const authStorage = new AuthStorage()
+const sortingStorage = new SortingStorage()
 const apolloClient = createApolloClient(authStorage)
 
 const App = () => {
@@ -17,7 +20,9 @@ const App = () => {
       <NativeRouter>
         <ApolloProvider client={apolloClient}>
           <AuthStorageContext.Provider value={authStorage}>
-            <Main />
+            <SortingContext.Provider value={sortingStorage}>
+              <Main />
+            </SortingContext.Provider>
           </AuthStorageContext.Provider>
         </ApolloProvider>
       </NativeRouter>
